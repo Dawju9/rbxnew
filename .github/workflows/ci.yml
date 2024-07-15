@@ -1,4 +1,4 @@
-name: CI
+name: CurrentIter Workflow
 
 on:
   push:
@@ -56,3 +56,24 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: v0.20.0
           args: --check src/
+
+  setup-foreman:
+    name: Setup Foreman
+    uses: Roblox/setup-foreman@v1
+    with:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      github-api-url: "https://api.github.com"
+      permissions:
+        contents: write
+        pull-requests: write
+        issues: read
+        packages: none
+
+  lua-action:
+    name: Lua Action
+    uses: MilesChou/lua-action@v0.0.1
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+      packages: none

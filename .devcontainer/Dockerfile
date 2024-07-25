@@ -1,32 +1,38 @@
-# You can pick any Debian/Ubuntu-based image. 😊
+# Use an Ubuntu-based image from Microsoft for compatibility with VS Code Dev Containers
 FROM mcr.microsoft.com/vscode/devcontainers/base:bullseye
 
-# Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies.
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    libglib2.0-0 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up non-root user
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-COPY scripts/*.sh /tmp/scripts/
 
-# cd into the user directory, download and unzip the github actions runner
-RUN cd /home/vscode && mkdir actions-runner && cd actions-runner
+# Create necessary directories and set up the GitHub Actions runner
+RUN mkdir -p /home/${USERNAME}/actions-runner
+WORKDIR /home/${USERNAME}/actions-runner
 
-# input GitHub runner version argument
+# Input GitHub runner version argument
 ARG RUNNER_VERSION=2.303.0
 
-# download, extract and install dependencies for GitHub Actions runner
-RUN cd /home/vscode/actions-runner \
-    && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
-    && tar xzf /home/vscode/actions-runner/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
-    && /home/vscode/actions-runner/bin/installdependencies.sh
+# Download, extract, and install dependencies for GitHub Actions runner
+RUN curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
+    && tar xzf actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
+    && ./bin/installdependencies.sh
 
-# copy over the start.sh script
-COPY scripts/start.sh /home/vscode/actions-runner/start.sh
+# Copy the start.sh script into the container
+COPY scripts/start.sh /home/${USERNAME}/actions-runner/start.sh
 
-# Apply ownership of home folder
-RUN chown -R vscode ~vscode
+# Make the script executable and ensure proper permissions
+RUN chown -R ${USERNAME}:${USERNAME} /home/${USERNAME} \
+    && chmod +x /home/${USERNAME}/actions-runner/start.sh
 
-# make the script executable
-RUN chmod +x /home/vscode/actions-runner/start.sh
+# Set the user to non-root
+USER ${USERNAME}
 
-# Clean up
-RUN rm -rf /var/lib/apt/lists/* /tmp/scripts
+# Start the GitHub Actions runner
+CMD ["/home/vscode/actions-runner/start.sh"]

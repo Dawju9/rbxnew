@@ -15,9 +15,23 @@
 	"postStartCommand": "/home/vscode/actions-runner/start.sh",
 	"remoteUser": "vscode",
 	"features": {
-	  "ghcr.io/devcontainers/features/common-utils:2": {},
-	  "ghcr.io/lukewiwa/features/shellcheck:0": {},
-	  "ghcr.io/devcontainers/features/github-cli:1": {}
+	  "ghcr.io/devcontainers/features/common-utils:2": {
+		"installZsh": true,
+		"installOhMyZsh": true,
+		"installOhMyZshConfig": true,
+		"upgradePackages": true,
+		"nonFreePackages": true,
+		"username": "automatic",
+		"userUid": "automatic",
+		"userGid": "automatic"
+	},
+	  "ghcr.io/lukewiwa/features/shellcheck:0": {
+		"version": "stable"
+	},
+	  "ghcr.io/devcontainers/features/github-cli:1": {
+		"installDirectlyFromGitHubRelease": true,
+		"version": "latest"
+	}
 	}
   }
   

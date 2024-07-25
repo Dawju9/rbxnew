@@ -4,11 +4,12 @@
 	"customizations": {
 	  "vscode": {
 		"extensions": [
-		  "ms-vscode.azurecli",
-		  "ms-vscode.powershell",
-		  "hashicorp.terraform",
-		  "tfsec.tfsec",
-		  "esbenp.prettier-vscode"
+			"ms-vscode.azurecli",
+			"ms-vscode.powershell",
+			"hashicorp.terraform",
+			"tfsec.tfsec",
+			"esbenp.prettier-vscode",
+			"ms-azuretools.vscode-docker"
 		]
 	  }
 	},
